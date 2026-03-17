@@ -7,6 +7,55 @@
 !(function($) {
   "use strict";
 
+  function setActiveNav(hash) {
+    $('.nav-menu .active, .mobile-nav .active').removeClass('active');
+    $('.nav-menu, .mobile-nav').find('a[href="' + hash + '"]').parent('li').addClass('active');
+  }
+
+  function toggleHeaderState() {
+    var compactHeaderTrigger = Math.max($('#header').outerHeight() - 120, 60);
+
+    if ($(window).scrollTop() > compactHeaderTrigger) {
+      $('#header').addClass('header-top');
+      $('.greeting-text').removeClass('show-on-home');
+    } else {
+      $('#header').removeClass('header-top');
+      $('.greeting-text').addClass('show-on-home');
+    }
+  }
+
+  function scrollToSection(hash, updateHash) {
+    var $target = $(hash);
+
+    if (!$target.length && hash !== '#header') {
+      return false;
+    }
+
+    if (hash === '#header') {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+
+      if (updateHash) {
+        history.replaceState(null, null, window.location.pathname + window.location.search);
+      }
+
+      return true;
+    }
+
+    $target[0].scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+    });
+
+    if (updateHash) {
+      history.replaceState(null, null, hash);
+    }
+
+    return true;
+  }
+
   // Nav Menu
   $(document).on('click', '.nav-menu a, .mobile-nav a, .scrollto', function(e) {
     if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') && location.hostname == this.hostname) {
@@ -16,30 +65,10 @@
         e.preventDefault();
 
         if ($(this).parents('.nav-menu, .mobile-nav').length) {
-          $('.nav-menu .active, .mobile-nav .active').removeClass('active');
-          $(this).closest('li').addClass('active');
+          setActiveNav(hash);
         }
 
-        if (hash == '#header') {
-          $('#header').removeClass('header-top');
-          $("section").removeClass('section-show');
-          $('.greeting-text').addClass('show-on-home'); // Show greeting on home
-          return;
-        }
-
-        // Hide greeting text when navigating to other sections
-        $('.greeting-text').removeClass('show-on-home');
-
-        if (!$('#header').hasClass('header-top')) {
-          $('#header').addClass('header-top');
-          setTimeout(function() {
-            $("section").removeClass('section-show');
-            $(hash).addClass('section-show');
-          }, 350);
-        } else {
-          $("section").removeClass('section-show');
-          $(hash).addClass('section-show');
-        }
+        scrollToSection(hash, true);
 
         if ($('body').hasClass('mobile-nav-active')) {
           $('body').removeClass('mobile-nav-active');
@@ -57,18 +86,10 @@
   if (window.location.hash) {
     var initial_nav = window.location.hash;
     if ($(initial_nav).length) {
-      $('#header').addClass('header-top');
-      $('.nav-menu .active, .mobile-nav .active').removeClass('active');
-      $('.nav-menu, .mobile-nav').find('a[href="' + initial_nav + '"]').parent('li').addClass('active');
+      setActiveNav(initial_nav);
       setTimeout(function() {
-        $("section").removeClass('section-show');
-        $(initial_nav).addClass('section-show');
-      }, 350);
-      
-      // Hide greeting if not on home page
-      if (initial_nav !== '#header') {
-        $('.greeting-text').removeClass('show-on-home');
-      }
+        scrollToSection(initial_nav, false);
+      }, 150);
     }
   }
 
@@ -155,6 +176,25 @@
   // Initiate venobox (lightbox feature used in portofilo)
   $(document).ready(function() {
     $('.venobox').venobox();
+    toggleHeaderState();
+  });
+
+  $(window).on('scroll', function() {
+    toggleHeaderState();
+
+    var scrollPosition = $(window).scrollTop() + 110;
+    var activeHash = '#header';
+
+    $('section').each(function() {
+      var sectionTop = $(this).offset().top;
+      var sectionBottom = sectionTop + $(this).outerHeight();
+
+      if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
+        activeHash = '#' + $(this).attr('id');
+      }
+    });
+
+    setActiveNav(activeHash);
   });
 
 })(jQuery);

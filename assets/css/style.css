@@ -49,6 +49,8 @@ html {
   -ms-overflow-style: none;
   min-height: 100vh;
   background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  scroll-behavior: smooth;
+  scroll-padding-top: 100px;
 }
 
 html::-webkit-scrollbar {
@@ -194,6 +196,43 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0;
 }
 
+.hero-profile {
+  width: 170px;
+  height: 170px;
+  margin: 0 auto 24px;
+  border-radius: 50%;
+  padding: 5px;
+  background: linear-gradient(135deg, rgba(255, 107, 53, 0.95), rgba(18, 214, 64, 0.8));
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.45);
+}
+
+.hero-profile-image,
+.hero-profile-fallback {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.hero-profile-image {
+  object-fit: cover;
+  display: block;
+  border: 4px solid rgba(0, 0, 0, 0.85);
+  background: #101010;
+}
+
+.hero-profile-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 4px solid rgba(0, 0, 0, 0.85);
+  background: radial-gradient(circle at top, #2f2f2f, #0f0f0f 70%);
+  color: #ffffff;
+  font-family: "Poppins", sans-serif;
+  font-size: 48px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
 /* Modern social links */
 .social-links {
   margin-top: 30px;
@@ -260,6 +299,12 @@ h1, h2, h3, h4, h5, h6 {
   #header h1 {
     font-size: 36px; /* Even smaller for mobile */
   }
+
+  .hero-profile {
+    width: 130px;
+    height: 130px;
+    margin-bottom: 20px;
+  }
   
   #header h2 {
     font-size: 20px;
@@ -278,6 +323,11 @@ h1, h2, h3, h4, h5, h6 {
 @media (max-width: 480px) {
   #header h1 {
     font-size: 28px; /* Smallest for very small screens */
+  }
+
+  .hero-profile {
+    width: 110px;
+    height: 110px;
   }
 }
 
@@ -472,6 +522,11 @@ h1, h2, h3, h4, h5, h6 {
   
 }
 
+#header.header-top .hero-profile,
+#header.header-top .greeting-text {
+  display: none;
+}
+
 #header.header-top h1 {
   margin-right: auto;
   font-size: 36px;
@@ -499,20 +554,22 @@ h1, h2, h3, h4, h5, h6 {
 # Sections General
 --------------------------------------------------------------*/
 section {
-  overflow: hidden;
-  position: absolute;
+  overflow: visible;
+  position: relative;
   width: 100%;
-  top: 140px;
-  bottom: 100%;
-  opacity: 0;
-  z-index: 2;
+  top: auto;
+  bottom: auto;
+  opacity: 1;
+  z-index: 1;
+  padding: 70px 0 0;
+  scroll-margin-top: 100px;
 }
 
 section.section-show {
-  top: 70px;
+  top: auto;
   bottom: auto;
   opacity: 1;
-  padding-bottom: 0px;
+  padding-bottom: 0;
 }
 
 section .container {
@@ -529,12 +586,29 @@ section .container {
   margin: 20px 0;
 }
 
+#about {
+  padding-bottom: 70px;
+}
+
+#about .interests {
+  margin-bottom: 10px;
+}
+
+#education {
+  padding-top: 90px;
+}
+
 @media (max-width: 768px) {
   section {
-    top: 120px;
+    padding-top: 55px;
   }
-  section.section-show {
-    top: 80px;
+
+  #about {
+    padding-bottom: 50px;
+  }
+
+  #education {
+    padding-top: 65px;
   }
 }
 
